@@ -22,3 +22,5 @@ pyusb
     ```
   
 ## Enjoy!
+
+Icons created by [Keyamoon](http://keyamoon.com/) used under the [CC-BY 4.0](http://creativecommons.org/licenses/by/4.0/) license. Icons were converted into an alternative format for use in this project.
