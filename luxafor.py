@@ -34,7 +34,7 @@ def setLuxaforColor(color):
     dev.write(1, [0, color])
 
 # rgb colour
-def setRGB(r, g, b, led = 255): # led can be used to specify an led in the device numbered 1-6 to b individually lit, led 255 lights all leds
+def setRGB(r, g, b, led = 255): # led can be used to specify an led in the device numbered 1-6 to be individually lit, led 255 lights all leds
     dev.write(1, [1, led, r, g, b])
 
 # fade in rgb
