@@ -13,7 +13,7 @@ pyusb
     ```
 2. Install tk-inter for python
     ```
-    apt-get install pythin-tk
+    apt-get install python-tk
     ```
 
 3. Run the permissions fix to add the Luxafor usb device to udev rules list
