@@ -38,6 +38,9 @@ class Application(Frame):
         self.pack()
         self.createWidgets()
 
+# initialise device
+luxafor.initialise()
+
 # create root and set to show above other windows
 root = Tk()
 root.title('LuxPanel')
@@ -49,4 +52,3 @@ app.mainloop()
 
 # turn off luxafor on close
 luxafor.setLuxaforColor(79)
-root.destroy()
