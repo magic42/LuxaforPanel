@@ -39,15 +39,15 @@ def setLuxaforColor(color):
 
 # rgb colour
 def setRGB(r, g, b, led = 255): # led can be used to specify an led in the device numbered 1-6 to be individually lit, led 255 lights all leds
-    write([1, led, r, g, b])
+    write([1, int(led), int(r), int(g), int(b)])
 
 # fade in rgb
 def fadeRGB(r, g, b, duration = 50, led = 255):
-    write([2, led, r, g, b, duration])
+    write([2, int(led), int(r), int(g), int(b), int(duration)])
 
 # flashing rgb
 def flashRGB(r, g, b, duration = 10, repeat = 5, led = 255): # note that upon completion of the flashing sequence the colour of led 1 is applied to led 255 changing the whole array to the same colour
-    write([3, led, r, g, b, duration, 0, repeat])
+    write([3, int(led), int(r), int(g), int(b), int(duration), 0, int(repeat)])
 
 # write to device
 def write(input):
