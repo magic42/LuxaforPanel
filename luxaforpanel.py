@@ -1,49 +1,39 @@
+#!/usr/bin/env python
 import luxafor
 import time, subprocess, os
 import ConfigParser
 from Tkinter import *
+import dbus
 
 class Application(Frame):
+    sys_bus = dbus.SystemBus()
+
+    def createWidget(self, name):
+        config = self.config
+
+        setattr(self, name + '_IMG', False)        
+
+        if (config.has_option(name, 'image')) : 
+            if (config.get(name, 'image') != 'none') :
+                setattr(self, name + '_IMG', PhotoImage(file=config.get(name, 'image')))
+
+        setattr(self, name, Button(self))
+        getattr(self, name)['text'] = config.get(name, 'text')
+        getattr(self, name)['fg']   = config.get(name, 'foreground_colour')
+        getattr(self, name)['command'] =  lambda: luxafor.fadeRGB(*(config.get(name, 'colour').split(',')))
+        if (getattr(self, name + '_IMG')) :
+            getattr(self, name)['image'] = getattr(self, name + '_IMG')
+
+        if (config.has_option(name, 'align')) : 
+            getattr(self, name).pack({'side': config.get(name, 'align')})
+        else:
+            getattr(self, name).pack({'side': 'left'})
 
     def createWidgets(self):
         config = self.config
 
-        self.OKImg = PhotoImage(file=config.get('OK_Button', 'image'))
-        self.BUSYImage = PhotoImage(file=config.get('BUSY_Button', 'image'))
-        self.OFFImage = PhotoImage(file=config.get('OFF_Button', 'image'))
-        self.SETTINGSImage = PhotoImage(file=config.get('SETTINGS_Button', 'image'))
-
-        self.OK = Button(self)
-        self.OK['text'] = config.get('OK_Button', 'text')
-        self.OK['fg']   = config.get('OK_Button', 'foreground_colour')
-        self.OK['command'] =  lambda: luxafor.fadeRGB(*(config.get('OK_Button', 'colour').split(',')))
-        self.OK['image'] = self.OKImg
-
-        self.OK.pack({'side': 'left'})
-
-        self.BUSY = Button(self)
-        self.BUSY['text'] = config.get('BUSY_Button', 'text')
-        self.BUSY['fg']   = config.get('BUSY_Button', 'foreground_colour')
-        self.BUSY['command'] =  lambda: luxafor.fadeRGB(*config.get('BUSY_Button', 'colour').split(','))
-        self.BUSY['image'] = self.BUSYImage
-
-        self.BUSY.pack({'side': 'left'})
-
-        self.OFF = Button(self)
-        self.OFF['text'] = config.get('OFF_Button', 'text')
-        self.OFF['fg']   = config.get('OFF_Button', 'foreground_colour')
-        self.OFF['command'] =  lambda: luxafor.fadeRGB(*config.get('OFF_Button', 'colour').split(','))
-        self.OFF['image'] = self.OFFImage
-
-        self.OFF.pack({'side': 'left'})
-
-        self.SETTINGS = Button(self)
-        self.SETTINGS['text'] = config.get('SETTINGS_Button', 'text')
-        self.SETTINGS['fg']   = config.get('SETTINGS_Button', 'foreground_colour')
-        self.SETTINGS['command'] =  lambda: self.openSettings()
-        self.SETTINGS['image'] = self.SETTINGSImage
-
-        self.SETTINGS.pack({'side': 'left'})
+        for section in config.sections():
+            self.createWidget(section)
 
     def setWidget(self, widget, text, fg, command, image):
         if (text != None):
@@ -80,18 +70,6 @@ class Application(Frame):
         self.config.set('BUSY_Button', 'colour', '255,0,0')
         self.config.set('BUSY_Button', 'anim', 'fade')
 
-        self.config.add_section('OFF_Button')
-        self.config.set('OFF_Button', 'text', 'Off')
-        self.config.set('OFF_Button', 'foreground_colour', 'BLACK')
-        self.config.set('OFF_Button', 'image', 'switch.gif')
-        self.config.set('OFF_Button', 'colour', '0,0,0')
-        self.config.set('OFF_Button', 'anim', 'fade')
-
-        self.config.add_section('SETTINGS_Button')
-        self.config.set('SETTINGS_Button', 'text', 'Settings')
-        self.config.set('SETTINGS_Button', 'foreground_colour', 'BLACK')
-        self.config.set('SETTINGS_Button', 'image', 'settings.gif')
-
         with open('default.cfg', 'wb') as configfile:
             self.config.write(configfile)
 
@@ -99,6 +77,21 @@ class Application(Frame):
         Frame.__init__(self, master)
         self.pack()
         self.config = ConfigParser.ConfigParser()
+
+        self.config.add_section('OFF_Button')
+        self.config.set('OFF_Button', 'text', 'Off')
+        self.config.set('OFF_Button', 'foreground_colour', 'BLACK')
+        self.config.set('OFF_Button', 'image', 'switch.gif')
+        self.config.set('OFF_Button', 'colour', '0,0,0')
+        self.config.set('OFF_Button', 'anim', 'fade')
+        self.config.set('OFF_Button', 'align', 'right')
+
+        self.config.add_section('SETTINGS_Button')
+        self.config.set('SETTINGS_Button', 'text', 'Settings')
+        self.config.set('SETTINGS_Button', 'foreground_colour', 'BLACK')
+        self.config.set('SETTINGS_Button', 'image', 'settings.gif')
+        self.config.set('SETTINGS_Button', 'align', 'right')
+
         try:
             self.config.readfp(open('default.cfg'))
         except  Exception as e:

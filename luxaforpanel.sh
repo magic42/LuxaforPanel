@@ -1,0 +1,1 @@
+python .luxaforpanel.py
